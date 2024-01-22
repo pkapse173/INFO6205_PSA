@@ -11,6 +11,7 @@ public class RandomWalk {
     private int x = 0;
     private int y = 0;
 
+    //Creating instance of random class for generating random moves
     private final Random random = new Random();
 
     /**
@@ -19,12 +20,15 @@ public class RandomWalk {
      * @param dx the distance he moves in the x direction
      * @param dy the distance he moves in the y direction
      */
+    //this method is for updating current position by moving the drunkard in x and y dir
     private void move(int dx, int dy) {
         // TO BE IMPLEMENTED  do move
+        x += dx;
+        y += dy;
 
 
         // SKELETON
-         throw new RuntimeException("Not implemented");
+         //throw new RuntimeException("Not implemented");
         // END SOLUTION
     }
 
@@ -33,17 +37,22 @@ public class RandomWalk {
      *
      * @param m the number of steps the drunkard takes
      */
+    //It will perform a random walk of 'm' steps by calling randomMove method
     private void randomWalk(int m) {
-        // TO BE IMPLEMENTED 
+        // TO BE IMPLEMENTED
+        for(int i = 0; i < m; i++){
+            randomMove();
+        }
 
 
-throw new RuntimeException("implementation missing");
+//throw new RuntimeException("implementation missing");
     }
 
     /**
      * Private method to generate a random move according to the rules of the situation.
      * That's to say, moves can be (+-1, 0) or (0, +-1).
      */
+    //It will generates random move in North/South or East/West directions and updates the position accordingly
     private void randomMove() {
         boolean ns = random.nextBoolean();
         int step = random.nextBoolean() ? 1 : -1;
@@ -55,11 +64,11 @@ throw new RuntimeException("implementation missing");
      *
      * @return the (Euclidean) distance from the origin to the current position.
      */
+    //Calculate the Euclidean distance from the origin to the current position
     public double distance() {
-        // TO BE IMPLEMENTED 
-
+        // TO BE IMPLEMENTED
         // SKELETON
-         return 0.0;
+         return Math.sqrt(x * x + y * y);
         // END SOLUTION
     }
 
@@ -81,13 +90,15 @@ throw new RuntimeException("implementation missing");
     }
 
     public static void main(String[] args) {
-        if (args.length == 0)
-            throw new RuntimeException("Syntax: RandomWalk steps [experiments]");
-        int m = Integer.parseInt(args[0]);
-        int n = 30;
-        if (args.length > 1) n = Integer.parseInt(args[1]);
-        double meanDistance = randomWalkMulti(m, n);
-        System.out.println(m + " steps: " + meanDistance + " over " + n + " experiments");
+        int [] steps = {5, 15, 25, 35, 45, 55, 65, 75}; //declaring sample 8 steps foe examples
+        int n = 10; // number of experiments
+        double totalDistance = 0;
+        for(int m : steps){
+            for (int i = 0; i < n; i++) {
+                totalDistance = randomWalkMulti(m, n);
+            }
+            //Printing result of each count with mean distance and experiments
+            System.out.println(m + " steps: " + totalDistance + " over " + n + " experiments");
+        }
     }
-
 }
