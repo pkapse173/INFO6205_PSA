@@ -7,6 +7,7 @@ import edu.neu.coe.info6205.util.Utilities;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
+import java.util.Arrays;
 
 public class ThreeSumBenchmark {
     public ThreeSumBenchmark(int runs, int n, int m) {
@@ -19,6 +20,7 @@ public class ThreeSumBenchmark {
         System.out.println("ThreeSumBenchmark: N=" + n);
         benchmarkThreeSum("ThreeSumQuadratic", (xs) -> new ThreeSumQuadratic(xs).getTriples(), n, timeLoggersQuadratic);
         benchmarkThreeSum("ThreeSumQuadrithmic", (xs) -> new ThreeSumQuadrithmic(xs).getTriples(), n, timeLoggersQuadrithmic);
+        benchmarkThreeSum("ThreeSumQuadraticWithCalipers", (xs) -> new ThreeSumQuadraticWithCalipers(xs).getTriples(), n, timeLoggersQuadraticWithCalipers);
         benchmarkThreeSum("ThreeSumCubic", (xs) -> new ThreeSumCubic(xs).getTriples(), n, timeLoggersCubic);
     }
 
@@ -33,17 +35,30 @@ public class ThreeSumBenchmark {
     }
 
     private void benchmarkThreeSum(final String description, final Consumer<int[]> function, int n, final TimeLogger[] timeLoggers) {
-        if (description.equals("ThreeSumCubic") && n > 4000) return;
-        // TO BE IMPLEMENTED 
+        if (description.equals("ThreeSumCubic") && n > 16000) return;
+        // TO BE IMPLEMENTED
+        int[] inputArray = supplier.get();
+        System.out.println("Input Array: " + Arrays.toString(inputArray));
 
+        double totalTime = 0.0;
 
+        for (int i = 0; i < runs; i++) {
+            int[] copyArray = Arrays.copyOf(inputArray, inputArray.length);
+            long startTime = System.currentTimeMillis();
+            function.accept(copyArray); // Run the algorithm
+            long endTime = System.currentTimeMillis();
+            double time = endTime - startTime;
+            totalTime += time;
 
+            System.out.println(description + ": N=" + n + " | Run: " + (i + 1) + " | Time: " + time + " mSec");
+        }
 
+        double averageTime = totalTime / runs;
 
-
-
-
-throw new RuntimeException("implementation missing");
+        System.out.println(description + ": N=" + n);
+        for (TimeLogger logger : timeLoggers) {
+            logger.log(averageTime, n);
+        }
     }
 
     private final static TimeLogger[] timeLoggersCubic = {
@@ -55,6 +70,11 @@ throw new RuntimeException("implementation missing");
             new TimeLogger("Normalized time per run (n^2 log n): ", (time, n) -> time / n / n / Utilities.lg(n) * 1e6)
     };
     private final static TimeLogger[] timeLoggersQuadratic = {
+            new TimeLogger("Raw time per run (mSec): ", (time, n) -> time),
+            new TimeLogger("Normalized time per run (n^2): ", (time, n) -> time / n / n * 1e6)
+    };
+
+    private final static TimeLogger[] timeLoggersQuadraticWithCalipers = {
             new TimeLogger("Raw time per run (mSec): ", (time, n) -> time),
             new TimeLogger("Normalized time per run (n^2): ", (time, n) -> time / n / n * 1e6)
     };
