@@ -59,38 +59,32 @@ public class Timer {
      * @param <U> the type which is the result of function and the input to postFunction (if any).
      * @return the average milliseconds per repetition.
      */
-    public <T, U> double repeat(int n, boolean warmup, Supplier<T> supplier, Function<T, U> function, UnaryOperator<T> preFunction, Consumer<U> postFunction) {
+    public <T, U> double repeat(int n, boolean warmup,Supplier<T> supplier, Function<T, U> function, UnaryOperator<T> preFunction, Consumer<U> postFunction) {
         // TO BE IMPLEMENTED : note that the timer is running when this method is called and should still be running when it returns.
+        long overallTime = 0L;
+        int actualRuns = warmup ? n - Benchmark_Timer.getWarmupRuns(n) : n;
 
+        for (int i = 0; i < n; i++) {
+            T value = supplier.get();
 
+            if (preFunction != null) {
+                value = preFunction.apply(value);
+            }
+            long startingTime = getClock();
+            U result = function.apply(value);
+            long endingTime = getClock();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // SKELETON
-         return 0;
-        // END SOLUTION
+            if (postFunction != null) {
+                postFunction.accept(result);
+            }
+            overallTime += endingTime - startingTime;
+            // Increment run only if not in the warm-up phase
+            if (!warmup) {
+                lap();
+            }
+        }
+        return toMillisecs(overallTime) / actualRuns;
     }
-
     /**
      * Stop this Timer and return the mean lap time in milliseconds.
      *
@@ -216,7 +210,7 @@ public class Timer {
         // TO BE IMPLEMENTED 
 
         // SKELETON
-         return 0;
+        return System.nanoTime();
         // END SOLUTION
     }
 
@@ -231,8 +225,8 @@ public class Timer {
         // TO BE IMPLEMENTED 
 
         // SKELETON
-         return 0;
-        // END SOLUTION
+        return ticks / 1_000_000.0;
+        // ENDe SOLUTION
     }
 
     final static LazyLogger logger = new LazyLogger(Timer.class);
