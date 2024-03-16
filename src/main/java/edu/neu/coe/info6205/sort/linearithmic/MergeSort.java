@@ -65,23 +65,7 @@ public class MergeSort<X extends Comparable<X>> extends SortWithHelper<X> {
         }
 
         // TO BE IMPLEMENTED  : implement merge sort with insurance and no-copy optimizations
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-throw new RuntimeException("implementation missing");
+        //END
     }
 
     // CONSIDER combine with MergeSortBasic perhaps.
@@ -111,3 +95,4 @@ throw new RuntimeException("implementation missing");
 
     private final InsertionSort<X> insertionSort;
 }
+
